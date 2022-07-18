@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body{
+            background: rgb(202, 231, 236);
+        }
+    </style>
+</head>
+<body>
+    <form id="messForm">
+        <label for="name">имя</label>
+        <input type="text" id="name" placeholder="введите имя"></textarea><br>
+        <label for="message">сообщение</label>
+        <textarea name="message" id="message" placeholder="введите сообщение"></textarea>
+        <input type="submit" value="Отправить" class="btn btn-danger">
+    </form>
+    чат:<br>
+    <div id="all_mess"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(function(){
+            socket = io.connect();
+            $form = $("#messForm");
+            $input = $("#message");
+            $all_messages = $("#all_mess");
+            $name = $("#name");
+
+            $form.submit(function(event){
+                event.preventDefault();
+                socket.emit('send mess', $name.val() +": "+ $input.val());
+                $input.val('');
+            });
+            socket.on('add mess',function(data){
+                $all_messages.append("<div>"+data.msg+"</div>")
+            });
+        });
+    </script>
+</body>
+</html>
